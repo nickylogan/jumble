@@ -10,13 +10,6 @@ class Generator:
         def __init__(self):
             self.__reset()
 
-        def build(self) -> 'Generator':
-            self.__generator.train(filename=self.__filename, gramlen=self.__ngram)
-
-            generator = self.__generator
-            self.__reset()
-            return generator
-
         def set_source_file(self, filename: str) -> 'Builder':
             self.__filename = filename
             return self
@@ -24,6 +17,13 @@ class Generator:
         def set_ngram(self, ngram: int) -> 'Builder':
             self.__ngram = ngram
             return self
+
+        def build(self) -> 'Generator':
+            self.__generator.train(filename=self.__filename, gramlen=self.__ngram)
+
+            generator = self.__generator
+            self.__reset()
+            return generator
 
         def __reset(self) -> None:
             self.__generator = Generator()
@@ -53,9 +53,11 @@ class Generator:
         for k, v in tmp.items():
             # store in temporary list
             vals = [(ngram, cnt) for ngram, cnt in v.items()]
+            
             # normalize values
             total = sum(x for _, x in vals)
             vals = [(ngram, cnt/total) for ngram, cnt in vals]
+            
             # create cumulative distribution
             cum = [("", 0)]
             [cum.append((ngram, cum[-1][1] + x)) for ngram, x in vals]
