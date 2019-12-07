@@ -1,9 +1,9 @@
-from generator import Generator
+from jumble import Jumble
 
 def main():
     filename = "words_alpha.txt"
-    generator = (
-        Generator.Builder()
+    jumble = (
+        Jumble.Builder()
             .set_source_file(filename)
             .set_ngram(4)
             .build()
@@ -11,7 +11,7 @@ def main():
     
     # keep generating words
     while True:
-        print(generator.generate_word(), end="")
+        print(jumble.generate_word(), end="")
         input()
 
 if __name__ == "__main__":

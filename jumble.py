@@ -5,7 +5,7 @@ import random
 
 Chain = Dict[str, List[Tuple[str, float]]]
 
-class Generator:
+class Jumble:
     class Builder:
         def __init__(self):
             self.__reset()
@@ -26,7 +26,7 @@ class Generator:
             return generator
 
         def __reset(self) -> None:
-            self.__generator = Generator()
+            self.__generator = Jumble()
             self.__filename = ""
             self.__ngram = 0
 
