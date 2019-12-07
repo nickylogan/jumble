@@ -10,9 +10,6 @@ class Generator:
         def __init__(self):
             self.__reset()
 
-        def __reset(self) -> None:
-            self.__generator = Generator()
-
         def build(self) -> 'Generator':
             self.__generator.train(filename=self.__filename, gramlen=self.__ngram)
 
@@ -27,6 +24,11 @@ class Generator:
         def set_ngram(self, ngram: int) -> 'Builder':
             self.__ngram = ngram
             return self
+
+        def __reset(self) -> None:
+            self.__generator = Generator()
+            self.__filename = ""
+            self.__ngram = 0
 
     
     def train(self, filename: str, gramlen: int):
