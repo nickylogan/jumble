@@ -1,7 +1,7 @@
 from jumble import Jumble
 
 def main():
-    filename = "words_alpha.txt"
+    filename = "words_eng.txt"
     jumble = (
         Jumble.Builder()
             .set_source_file(filename)
