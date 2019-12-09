@@ -62,10 +62,9 @@ class Jumble:
             # create cumulative distribution
             dist = [("", 0)]
             [dist.append((ngram, dist[-1][1] + x)) for ngram, x in vals]
-            dist = dist[1:]
 
             # store in matrix
-            matrix[k] = dist
+            matrix[k] = dist[1:]
 
         self.__model = matrix
 
