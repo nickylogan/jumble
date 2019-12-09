@@ -5,6 +5,7 @@ import random
 
 Chain = Dict[str, List[Tuple[str, float]]]
 
+
 class Jumble:
     class Builder:
         def __init__(self):
@@ -13,13 +14,14 @@ class Jumble:
         def set_source_file(self, filename: str) -> 'Builder':
             self.__filename = filename
             return self
-        
+
         def set_ngram(self, ngram: int) -> 'Builder':
             self.__ngram = ngram
             return self
 
         def build(self) -> 'Generator':
-            self.__generator.train(filename=self.__filename, gramlen=self.__ngram)
+            self.__generator.train(
+                filename=self.__filename, gramlen=self.__ngram)
 
             generator = self.__generator
             self.__reset()
@@ -30,11 +32,10 @@ class Jumble:
             self.__filename = ""
             self.__ngram = 0
 
-    
     def train(self, filename: str, gramlen: int):
         f = open(filename, "r")
         lines = f.readlines()
-        
+
         # Init tmp count
         tmp = defaultdict(lambda: defaultdict(int))
 
@@ -42,7 +43,7 @@ class Jumble:
         for word in lines:
             word = word.strip()
             prev = "#"
-            for i in range(0,len(word), gramlen):
+            for i in range(0, len(word), gramlen):
                 ngram = word[i:i+gramlen]
                 tmp[prev][ngram] += 1
                 prev = ngram
@@ -53,18 +54,18 @@ class Jumble:
         for k, v in tmp.items():
             # store in temporary list
             vals = [(ngram, cnt) for ngram, cnt in v.items()]
-            
+
             # normalize values
             total = sum(x for _, x in vals)
             vals = [(ngram, cnt/total) for ngram, cnt in vals]
-            
+
             # create cumulative distribution
-            cum = [("", 0)]
-            [cum.append((ngram, cum[-1][1] + x)) for ngram, x in vals]
-            cum = cum[1:]
+            dist = [("", 0)]
+            [dist.append((ngram, dist[-1][1] + x)) for ngram, x in vals]
+            dist = dist[1:]
 
             # store in matrix
-            matrix[k] = cum
+            matrix[k] = dist
 
         self.__model = matrix
 
@@ -72,19 +73,19 @@ class Jumble:
         def generate_next(ngram: str) -> str:
             vals = self.__model[ngram]
             keys = [x[1] for x in vals]
-            
+
             # generate random and find
             x = random.uniform(0, 1)
             ngram = vals[bisect_right(keys, x)]
             return ngram[0]
-        
+
         # generate until stop
-        prev, word = "#", ""
+        word, prev = "", "#"
         while True:
             ngram = generate_next(prev)
             if ngram == "#":
                 break
-            
+
             word += ngram
             prev = ngram
 
